@@ -1,0 +1,10 @@
+
+<div>
+        Sort by:
+        <a href="{% url 'employee_list' %}?ordering=name">Name</a> |
+        <a href="{% url 'employee_list' %}?ordering=-name">Name (descending)</a> |
+        <a href="{% url 'employee_list' %}?ordering=email">Email</a> |
+        <a href="{% url 'employee_list' %}?ordering=-email">Email (descending)</a> |
+        <a href="{% url 'employee_list' %}?ordering=position">Position</a> |
+        <a href="{% url 'employee_list' %}?ordering=-position">Position (descending)</a>
+</div>

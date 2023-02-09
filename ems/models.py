@@ -18,6 +18,9 @@ class Employee(models.Model):
     Report_to=models.CharField(max_length=250)
     Linkedin=models.URLField()
     Profile_pic=models.ImageField()
+
+class Emp_Leave_appication(models.Model):
+    
     
 
 
