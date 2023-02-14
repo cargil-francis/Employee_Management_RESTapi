@@ -16,7 +16,7 @@ class Employee(models.Model):
     Address = models.TextField(max_length=500)
     Position = models.CharField(max_length=250)
     Dob = models.DateField(max_length=10 ,null=True)
-    MariialStatus = models.BooleanField()
+    MaritalStatus = models.BooleanField()
     Bloodgrp = models.CharField(max_length=10)
     Jobtitle = models.CharField(max_length=100)
     Workloc = models.TextField(max_length=500)
