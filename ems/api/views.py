@@ -1,14 +1,37 @@
 
-from django.shortcuts import get_object_or_404
-from rest_framework.decorators import api_view
-from rest_framework.generics import ListAPIView, CreateAPIView,UpdateAPIView,DestroyAPIView,RetrieveUpdateDestroyAPIView
-from .serializer import EmpModelSerializer,EmpLeaveModelSerializer,EmpnameSerializer
+
+from rest_framework.generics import ListAPIView, CreateAPIView,UpdateAPIView,DestroyAPIView,RetrieveUpdateDestroyAPIView,RetrieveAPIView
+from .serializer import EmpModelSerializer,EmpLeaveModelSerializer,EmpnameSerializer,UpdateModelSerializer
 from ems.models import Employee ,Emp_Leave_appilcation
 from django.views.generic import DetailView
-import django_filters.rest_framework
 from rest_framework import filters
 from rest_framework.permissions import IsAdminUser
+from rest_framework import permissions,views
+from django.views import View
+from rest_framework.response import Response
+from django.http import JsonResponse
+from rest_framework_simplejwt.views import TokenObtainPairView
+from rest_framework.views import APIView
 
+
+
+
+
+
+class ObtainTokenPairWithCookieView(TokenObtainPairView):
+    def post(self, request, *args, **kwargs):
+        response = super().post(request, *args, **kwargs)
+        token = response.data['access']
+        print(token)
+        response.set_cookie('jwt', token, max_age=3600, httponly=True)
+        return response
+
+class LogoutView(APIView):
+    def post(self, request, *args, **kwargs):
+        response = JsonResponse({'message': 'Successfully logged out'}, status=200)
+        response.delete_cookie('jwt')
+        return response
+        
 
 
 class EmpListView(ListAPIView):
@@ -39,18 +62,22 @@ class EmpDeleteview(DestroyAPIView):
     lookup_field = 'id'
     permission_classes = [IsAdminUser]
 
-class EmpDetailview(DetailView):
+    def delete(self, request, *args, **kwargs):
+        response = JsonResponse({'message': 'User Deleted Sucessfully'}, status=200)
+        return response
+
+class EmpDetailview(RetrieveAPIView):
     queryset = Employee.objects.all()
     model = Employee
     serializer_class = EmpModelSerializer
     template_name = 'employee_detail.html'
-    lookup_field = 'pk'
+    lookup_field = 'Ename'
     permission_classes = [IsAdminUser]
 
    
 class EmpUpdateView(RetrieveUpdateDestroyAPIView):
     queryset = Employee.objects.all()
-    serializer_class = EmpModelSerializer
+    serializer_class = UpdateModelSerializer
     lookup_field = 'id'
     permission_classes = [IsAdminUser]
 
@@ -73,8 +100,9 @@ class EmpLeave_View(ListAPIView):
 
 class EmpLeave_create(CreateAPIView):
     queryset = Emp_Leave_appilcation.objects.all()
-    serializer_class = EmpLeaveModelSerializer,EmpnameSerializer
-    lookup_field = 'id'
+    serializer_class = EmpLeaveModelSerializer
+    
+    
 
 
 
@@ -83,6 +111,7 @@ class EmpLeave_request(RetrieveUpdateDestroyAPIView):
     serializer_class = EmpLeaveModelSerializer
     lookup_field = 'id'
     permission_classes = [IsAdminUser]
+
     
 
 
